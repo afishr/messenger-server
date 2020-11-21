@@ -1,6 +1,5 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const { getConnection } = require('typeorm');
 
 const app = express();
 require('dotenv').config();
@@ -14,5 +13,5 @@ app.listen(3000, () => {
 })
 
 app.get('/', (req, res) => {
-	res.json(getConnection().getRepository(User).find());
+	res.send('ggg');
 });
