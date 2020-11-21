@@ -1,0 +1,26 @@
+version: '3.7'
+services:
+
+  node:
+    container_name: node-server
+    build: .
+    env_file: .env
+    depends_on:
+      - mongo
+    links:
+      - mongo:mongo
+    ports:
+      - 3000:3000
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    command: npm run start:dev
+
+  mongo:
+    container_name: mongo-db
+    image: mongo:4
+    env_file: .env
+    ports:
+      - 27017:27017
+    volumes:
+      - /data/db
