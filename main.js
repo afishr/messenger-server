@@ -1,5 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const database = require('./database');
 
 const app = express();
 require('dotenv').config();
@@ -12,6 +13,14 @@ app.listen(3000, () => {
   console.log('Listening on port ', 3000);
 })
 
+// app.get('/', (req, res) => {
+// 	res.send('ggg');
+// });
+
 app.get('/', (req, res) => {
-	res.send('ggg');
-});
+  database.UserData.find((err, users)=> {
+    if (err) return res.error(err);
+    console.log(users);
+    res.json(users);
+  })
+})
