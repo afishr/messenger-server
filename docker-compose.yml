@@ -10,6 +10,7 @@ services:
     restart: unless-stopped
     env_file: .env
     environment:
+      - NODE_ENV=$NODE_ENV
       - MONGO_USERNAME=$MONGO_USERNAME
       - MONGO_PASSWORD=$MONGO_PASSWORD
       - MONGO_HOSTNAME=db
