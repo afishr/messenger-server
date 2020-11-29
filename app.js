@@ -1,4 +1,5 @@
 const express = require('express');
+const db = require('./db');
 
 const app = express();
 const port = process.env.PORT || 8080;
@@ -10,5 +11,5 @@ app.listen(port, () => {
 });
 
 app.get('/', (req, res) => {
-  res.send('Hello world!');
+  res.send(process.env.NODE_ENV);
 });
