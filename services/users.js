@@ -1,7 +1,0 @@
-const registerUser = () => {
-
-};
-
-const loginUser = () => {
-
-};
