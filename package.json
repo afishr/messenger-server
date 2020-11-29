@@ -2,19 +2,21 @@
   "name": "messenger-server",
   "version": "0.0.0",
   "description": "",
-  "author": "",
+  "author": "afishr <afishr00@gmail.com>",
   "license": "MIT",
   "main": "app.js",
   "repository": {
     "type": "git",
-    "url": ""
+    "url": "https://github.com/afishr/messenger-server"
   },
   "keywords": [
     "nodejs",
-    "bootstrap",
-    "express"
+    "express",
+    "mongo"
   ],
   "scripts": {
+    "start": "node app.js",
+    "start:dev": "./node_modules/.bin/nodemon app.js",
     "lint": "./node_modules/.bin/eslint"
   },
   "dependencies": {

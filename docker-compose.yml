@@ -19,13 +19,13 @@ services:
     ports:
       - "80:8080"
     volumes:
-      - .:/home/node/app
-      - node_modules:/home/node/app/node_modules
+      - .:/usr/src/app
+      - node_modules:/usr/src/app/node_modules
     networks:
       - app-network
     depends_on:
       - db
-    command: /home/node/app/node_modules/.bin/nodemon app.js
+    command: npm run start:dev
 
   db:
     image: mongo:4.1.8-xenial
@@ -35,6 +35,8 @@ services:
     environment:
       - MONGO_INITDB_ROOT_USERNAME=$MONGO_USERNAME
       - MONGO_INITDB_ROOT_PASSWORD=$MONGO_PASSWORD
+    ports:
+      - 27017:27017
     volumes:
       - dbdata:/data/db
     networks:
