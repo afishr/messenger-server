@@ -25,6 +25,7 @@ exports.registerUser = async (body) => {
     const result = await (await user.save()).toObject();
 
     result.authToken = this.generateJWT(user);
+    delete result.password;
 
     return {
       user: result,
@@ -51,6 +52,7 @@ exports.loginUser = async (body) => {
   }
 
   user.authToken = this.generateJWT(user);
+  delete user.password;
 
   return user;
 };
