@@ -1,7 +1,9 @@
 exports.CommonError = class {
-  constructor(type, message, status) {
-    this.type = type;
-    this.message = message;
+  constructor(error, status) {
+    console.error(error);
+
+    this.name = error.name;
+    this.message = error.message;
     this.status = status;
   }
 };
