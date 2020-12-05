@@ -4,8 +4,11 @@ const bodyParser = require('body-parser');
 const { usersRoute } = require('./routes/users.route');
 const { authGuard } = require('./middlewares/auth.middleware');
 require('./db');
+const morgan = require('morgan')
 
 const app = express();
+app.use(morgan('common'))
+
 const port = process.env.PORT || 8080;
 
 app.use(express.urlencoded({ extended: true }));
