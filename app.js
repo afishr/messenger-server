@@ -43,19 +43,6 @@ app.get('/', (req, res) => {
 
 const io = socketio(server)
 
-io.use(function(socket, next){
-  if (socket.handshake.query && socket.handshake.query.token){
-    jwt.verify(socket.handshake.query.token, 'secret', function(err, decoded) {
-      if (err) return next(new Error('Authentication error'));
-      socket.decoded = decoded;
-      next();
-    });
-  }
-  else {
-    next(new Error('Authentication error'));
-  }  
-  next()
-})
 
 io.on("connection", socket => {
   socket.on("disconnect", () => {
@@ -78,7 +65,6 @@ io.on("connection", socket => {
   });
 
   socket.on("joinRoom", ({ username, room }) => {
-      const user = 
       console.log(`User ${username} joined rooms ${room}`)
       const user = userJoin(socket.id, username, room)
       socket.join(user.room);
