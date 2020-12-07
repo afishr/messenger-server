@@ -2,12 +2,12 @@ const mongoose = require('mongoose');
 
 const { Schema } = mongoose;
 
-const userSchema = new Schema({
-  user: { type: String, required: true },
-  toUser: { type: String, required: true },
+const messageSchema = new Schema({
+  from: { type: mongoose.Schema.Types.ObjectId, required: true },
+  chat: { type: mongoose.Schema.Types.ObjectId, required: true },
   content: { type: String, required: true, index: { unique: true } },
-  timeSent: { type: Date, required: true, default: Date.now()}
-
+  timeSent: { type: Date, required: true, default: Date.now()},
+  status: {type: String, enum : ['Sent','Read'], default: 'Sent' },
 });
 
-exports.UserModel = mongoose.model('User', userSchema);
+exports.MessageModel = mongoose.model('User', messageSchema);
