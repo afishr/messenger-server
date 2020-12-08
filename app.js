@@ -4,7 +4,7 @@ require('dotenv').config();
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const morgan = require('morgan');
-const { usersRoute } = require('./routes/users.route');
+const { authRoute } = require('./routes/auth.route');
 const { authGuard } = require('./middlewares/auth.middleware');
 
 const formatMessage = require('./utils/messages');
@@ -19,10 +19,11 @@ app.use(morgan('common'));
 
 app.use(express.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-app.use('/users', usersRoute);
 app.use(cors({
   origin: 'http://localhost:3000',
 }));
+
+app.use('/auth', authRoute);
 
 const botName = 'Chat';
 const port = process.env.PORT || 8080;
