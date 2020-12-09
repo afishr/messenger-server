@@ -1,17 +1,15 @@
 const express = require('express');
 const socketio = require("socket.io");
 const http = require("http");
-require('dotenv').config();
 const bodyParser = require('body-parser');
 const { usersRoute } = require('./routes/users.route');
 const { authGuard } = require('./middlewares/auth.middleware');
-
-const formatMessage = require("./utils/messages");
-const { userJoin, getCurrentUser, userLeave, getRoomUsers } = require("./utils/users");
-
+const { formatMessage, getChat } = require("./services/chats.service");
+const { getUserId, findUserById } = require("./services/users.service");
 const cors = require('cors')
-require('./db');
 const morgan = require('morgan')
+require('dotenv').config();
+require('./db');
 
 const app = express();
 app.use(morgan('common'))
@@ -23,7 +21,6 @@ app.use(cors({
   origin: 'http://localhost:3000',
 }))
 
-const botName = "Chat"
 const port = process.env.PORT || 8080;
 
 server = app.listen(port, () => {
@@ -43,41 +40,28 @@ app.get('/', (req, res) => {
 
 const io = socketio(server)
 
-
 io.on("connection", socket => {
-  socket.on("disconnect", () => {
-      const user = userLeave(socket.id);
-      
-      if (user) {
-          io.to(user.room).emit("message", formatMessage(botName, `${user.username} left the chat`));
-
-          io.to(user.room).emit("roomUsers", {
-              room: user.room,
-              users: getRoomUsers(user.room)
-          })
-      }
+  socket.on("disconnectMe", ({chatId}) => {
+      console.log("diconnect")
+      socket.leave(chatId)
   });
 
-  socket.on("chatMessage", (msg) => {
-      console.log("i have a new message", msg)
-      const user = getCurrentUser(socket.id)
-      io.to(user.room).emit("message", formatMessage(user.username, msg));
+  socket.on("chatMessage", async ({ msg, token, chatId }) => {
+      console.log("i `have a new message", msg)
+      userId = getUserId(token)
+      const user = await findUserById(userId)
+      io.to(chatId).emit("message", formatMessage(user.username, msg));
   });
 
-  socket.on("joinRoom", ({ username, room }) => {
-      console.log(`User ${username} joined rooms ${room}`)
-      const user = userJoin(socket.id, username, room)
-      socket.join(user.room);
 
-      socket.emit("message", formatMessage(botName, "Welcome to our mega secure chat"));
-
-      socket.broadcast
-      .to(user.room)
-      .emit("message", formatMessage(botName, `${user.username} connected`));
-
-      io.to(user.room).emit("roomUsers", {
-          room: user.room,
-          users: getRoomUsers(user.room)
-      })
+  socket.on("joinRoom", async ({ token, to }) => {
+      userId = getUserId(token)
+      if (userId) {
+        user = await findUserById(userId)
+        chatId = await getChat(userId, to)
+        socket.join(chatId);
+        console.log(`User ${userId} connected to ${chatId}`)
+        socket.emit("chatId", chatId);
+    }
   });
 });

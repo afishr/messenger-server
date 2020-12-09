@@ -1,7 +1,6 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const { UserModel } = require('../models/user.model');
-
 const SALT_WORK_FACTOR = 10;
 
 const hashPassword = async (plainTextPassword) => {
@@ -53,12 +52,29 @@ exports.loginUser = async (body) => {
 
   user.authToken = this.generateJWT(user);
   delete user.password;
-
+  console.log("hello", parseInt(process.env.JWT_TTL))
   return user;
 };
 
 exports.generateJWT = ({ _id, username, email }) => jwt.sign(
   { _id, username, email },
   process.env.JWT_SECRET,
-  { expiresIn: process.env.JWT_TTL },
+  { expiresIn: parseInt(process.env.JWT_TTL) },
 );
+
+exports.getUserId = (token) => {
+  if (token == null) return null;
+
+  user = jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
+    if (err) {
+      return null
+    }
+    return user._id
+  });
+  
+  return user
+}
+
+exports.findUserById = async (id) => {
+  return await UserModel.findById(id)
+}
