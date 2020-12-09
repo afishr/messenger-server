@@ -31,4 +31,4 @@ router.post('/login', async (req, res) => {
   res.send(user);
 });
 
-exports.usersRoute = router;
+exports.authRoute = router;
