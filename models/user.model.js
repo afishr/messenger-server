@@ -11,6 +11,7 @@ const userSchema = new Schema({
   lastUpdated: { type: Date },
   lastName: { type: String },
   firstName: { type: String},
+  chats: [{ type: mongoose.Schema.Types.ObjectId, ref: "Chat" }]
 });
 
 exports.UserModel = mongoose.model('User', userSchema);
