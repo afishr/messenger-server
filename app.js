@@ -7,8 +7,6 @@ const { authRoute } = require('./routes/auth.route');
 const { authGuard } = require('./middlewares/auth.middleware');
 const { formatMessage, getChat } = require("./services/chats.service");
 const { getUserId, findUserById } = require("./services/users.service");
-const cors = require('cors');
-const morgan = require('morgan');
 require('dotenv').config();
 require('./db');
 
