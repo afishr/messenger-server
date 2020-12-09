@@ -2,10 +2,11 @@ const express = require('express');
 const socketio = require("socket.io");
 const bodyParser = require('body-parser');
 const morgan = require('morgan');
+const moment = require("moment");
 const cors = require('cors');
 const { authRoute } = require('./routes/auth.route');
 const { authGuard } = require('./middlewares/auth.middleware');
-const { formatMessage, getChat } = require("./services/chats.service");
+const { formatMessage, getChat, addMessage } = require("./services/chats.service");
 const { getUserId, findUserById } = require("./services/users.service");
 require('dotenv').config();
 require('./db');
@@ -16,7 +17,7 @@ app.use(morgan('common'));
 app.use(express.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(cors({
-  origin: 'http://localhost:3000',
+  origin: 'http://192.168.0.30:3000',
 }));
 
 app.use('/auth', authRoute);
@@ -46,10 +47,12 @@ io.on("connection", socket => {
   });
 
   socket.on("chatMessage", async ({ msg, token, chatId }) => {
-      console.log("i `have a new message", msg);
+      console.log("i `have a new message", msg, chatId);
+      time = new Date().getTime();
       userId = getUserId(token);
       const user = await findUserById(userId);
-      io.to(chatId).emit("message", formatMessage(user.username, msg));
+      await addMessage(user, chatId, msg, time)
+      io.to(chatId).emit("message", formatMessage(user.username, msg, time));
   });
 
 

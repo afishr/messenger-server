@@ -1,6 +1,7 @@
-const moment = require("moment");
 const { UserModel } = require('../models/user.model');
 const { ChatModel } = require('../models/chat.model');
+const { MessageModel } = require('../models/message.model');
+const { findUserById } = require("./users.service");
 
 exports.getChat = async (fromId, toId) => {
     const to = await findUserById(toId);
@@ -26,10 +27,18 @@ exports.formatMessage = (username, text) => {
     return {
         username,
         text,
-        time: moment().format("h:mm a")
+        time,
     };
 }
 
-exports.addMessage = async () => {
 
+async function findChatById(id) {
+  return await ChatModel.findById(id)
+}
+
+
+exports.addMessage = async (from, chatId, content, timeSent) => {
+  const chat = await findChatById(chatId);
+  message = new MessageModel({from, chat, content, timeSent});
+  await message.save();
 }

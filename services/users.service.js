@@ -52,7 +52,6 @@ exports.loginUser = async (body) => {
 
   user.authToken = this.generateJWT(user);
   delete user.password;
-  console.log("hello", parseInt(process.env.JWT_TTL))
   return user;
 };
 
