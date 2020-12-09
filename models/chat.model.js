@@ -5,7 +5,7 @@ const { Schema } = mongoose;
 const chatSchema = new Schema({
   participants: [{ type: mongoose.Schema.Types.ObjectId, required: true }],
   messages: [{ type: mongoose.Schema.Types.ObjectId, default: [] }],
-  timeCreated: { type: Date, required: true, default: Date.now()}
+  timeCreated: { type: Date, required: true, default: Date.now() },
 });
 
 exports.ChatModel = mongoose.model('Chat', chatSchema);

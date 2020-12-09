@@ -6,7 +6,9 @@ const { findUserById } = require('./users.service');
 exports.getChat = async (fromId, toId) => {
   const to = await findUserById(toId);
   const from = await findUserById(fromId);
-  const fromObject = await (await UserModel.findById(fromId)).populate('chats').execPopulate();
+  const fromObject = await (await UserModel.findById(fromId))
+    .populate('chats')
+    .execPopulate();
   const { chats } = fromObject;
 
   // eslint-disable-next-line no-restricted-syntax
@@ -37,7 +39,25 @@ function findChatById(id) {
 exports.addMessage = async (from, chatId, content, timeSent) => {
   const chat = await findChatById(chatId);
   const message = new MessageModel({
-    from, chat, content, timeSent,
+    from,
+    chat,
+    content,
+    timeSent,
   });
   await message.save();
+};
+
+exports.getMessages = async (userId, chatId) => {
+  const chat = await ChatModel.findOne({
+    _id: chatId,
+    participants: userId,
+  }).exec();
+
+  if (!chat) {
+    return [];
+  }
+
+  return MessageModel.find({ chat: chatId })
+    .sort({ timeSent: -1 })
+    .exec();
 };

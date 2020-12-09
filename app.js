@@ -7,6 +7,7 @@ const { authRoute } = require('./routes/auth.route');
 const { authGuard } = require('./middlewares/auth.middleware');
 const { formatMessage, getChat, addMessage } = require('./services/chats.service');
 const { getUserId, findUserById } = require('./services/users.service');
+const { chatRoute } = require('./routes/chat.route');
 require('dotenv').config();
 require('./db');
 
@@ -20,9 +21,9 @@ app.use(cors({
 }));
 
 app.use('/auth', authRoute);
+app.use('/chat', chatRoute);
 
 const port = process.env.PORT || 8080;
-
 const server = app.listen(port, () => {
   console.log(`Server listening on port ${port}`);
 });
