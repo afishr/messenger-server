@@ -28,7 +28,7 @@ router.post('/login', async (req, res) => {
 
   if (!user) return res.status(403).send('Unauthorized');
 
-  res.send(user);
+  return res.send(user);
 });
 
 exports.authRoute = router;

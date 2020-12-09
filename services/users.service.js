@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const { UserModel } = require('../models/user.model');
+
 const SALT_WORK_FACTOR = 10;
 
 const hashPassword = async (plainTextPassword) => {
@@ -58,22 +59,20 @@ exports.loginUser = async (body) => {
 exports.generateJWT = ({ _id, username, email }) => jwt.sign(
   { _id, username, email },
   process.env.JWT_SECRET,
-  { expiresIn: parseInt(process.env.JWT_TTL) },
+  { expiresIn: parseInt(process.env.JWT_TTL, 10) },
 );
 
 exports.getUserId = (token) => {
   if (token == null) return null;
 
-  user = jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
+  const extractedUser = jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
     if (err) {
-      return null
+      return null;
     }
-    return user._id
+    return user._id;
   });
-  
-  return user
-}
 
-exports.findUserById = async (id) => {
-  return await UserModel.findById(id)
-}
+  return extractedUser;
+};
+
+exports.findUserById = (id) => UserModel.findById(id);
