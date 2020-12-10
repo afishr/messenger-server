@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const { UserModel } = require('../models/user.model');
+
 const SALT_WORK_FACTOR = 10;
 
 const hashPassword = async (plainTextPassword) => {
@@ -46,7 +47,7 @@ exports.loginUser = async (body) => {
     ],
   }).lean();
 
-  if (!user || !checkPassword(body.password, user.password)) {
+  if (!user || !(await checkPassword(body.password, user.password))) {
     return null;
   }
 
@@ -58,25 +59,23 @@ exports.loginUser = async (body) => {
 exports.generateJWT = ({ _id, username, email }) => jwt.sign(
   { _id, username, email },
   process.env.JWT_SECRET,
-  { expiresIn: parseInt(process.env.JWT_TTL) },
+  { expiresIn: parseInt(process.env.JWT_TTL, 10) },
 );
 
 exports.getUserId = (token) => {
   if (token == null) return null;
 
-  user = jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
+  const user = jwt.verify(token, process.env.JWT_SECRET, (err, jwtUser) => {
     if (err) {
-      return null
+      return null;
     }
-    return user._id
+    return jwtUser._id;
   });
-  
-  return user
-}
 
-exports.findUserById = async (id) => {
-  return await UserModel.findById(id)
-}
+  return user;
+};
+
+exports.findUserById = async (id) => UserModel.findById(id);
 
 exports.updateUser = async (id, user) => {
   time = new Date().getTime();
@@ -91,3 +90,24 @@ exports.getUserProfile = async (id) => {
 exports.getUserByUsername = async (username) => {
   return await UserModel.findOne({username}, {username: 1})
 }
+
+
+exports.getUserProfile = async (id) => UserModel.findById(id, {
+  _id: 0, firstName: 1, lastName: 1, bio: 1,
+});
+
+exports.changePassword = async (userId, oldPassword, newPassword) => {
+  const user = await UserModel.findById({ _id: userId });
+
+  console.log(userId);
+
+  if (await checkPassword(oldPassword, user.password)) {
+    const hashedPassword = await hashPassword(newPassword);
+
+    user.password = hashedPassword;
+
+    return user.save();
+  }
+
+  return false;
+};

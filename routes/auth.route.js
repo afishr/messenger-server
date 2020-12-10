@@ -32,7 +32,6 @@ router.post('/login', async (req, res) => {
   return res.send(user);
 });
 
-
 router.put('/', authGuard, async (req, res) => {
   await updateUser({
     id: req.user._id,
@@ -41,6 +40,6 @@ router.put('/', authGuard, async (req, res) => {
   });
 
   res.status(200).send();
-})
+});
 
 exports.authRoute = router;

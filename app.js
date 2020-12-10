@@ -1,5 +1,5 @@
 const express = require('express');
-const socketio = require("socket.io");
+const socketio = require('socket.io');
 const bodyParser = require('body-parser');
 const morgan = require('morgan');
 const cors = require('cors');
@@ -21,7 +21,7 @@ app.use(bodyParser.json());
 //   origin: 'http://localhost:3000',
 // }));
 
-app.use(cors())
+app.use(cors());
 app.use('/auth', authRoute);
 app.use('/users', userRoute);
 app.use('/chats', chatRoute);
