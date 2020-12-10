@@ -2,7 +2,7 @@ const express = require('express');
 const { authGuard } = require('../middlewares/auth.middleware');
 const { getChats } = require('../services/chats.service');
 const {
-  updateUser, getUserProfile, findUserById, changePassword,
+  updateUser, getUserProfile, findUserById, changePassword, getUserByUsername
 } = require('../services/users.service');
 
 const router = express.Router();
@@ -25,7 +25,7 @@ router.get('/username', authGuard, (req, res) => {
 
 router.get('/profile', authGuard, async (req, res) => {
   const user = await getUserProfile(req.user._id);
-  res.status(200).send(user);
+  res.status(200).send({ user });
 });
 
 router.post('/change-password', authGuard, async (req, res) => {

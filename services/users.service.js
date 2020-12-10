@@ -91,11 +91,6 @@ exports.getUserByUsername = async (username) => {
   return await UserModel.findOne({username}, {username: 1})
 }
 
-
-exports.getUserProfile = async (id) => UserModel.findById(id, {
-  _id: 0, firstName: 1, lastName: 1, bio: 1,
-});
-
 exports.changePassword = async (userId, oldPassword, newPassword) => {
   const user = await UserModel.findById({ _id: userId });
 

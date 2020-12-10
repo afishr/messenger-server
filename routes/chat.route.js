@@ -8,7 +8,6 @@ const router = express.Router();
 router.get('/:chatId', authGuard, asyncMiddleware((req, res) => {
   getMessages(req.user._id, req.params.chatId)
     .then((messages) => {
-      console.log(messages, typeof(messages));
       return res.send(messages);
     })
 }));

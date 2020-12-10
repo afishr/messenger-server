@@ -37,6 +37,7 @@ const io = socketio(server);
 
 io.on("connection", socket => {
   socket.on("disconnectMe", ({chatId}) => {
+      console.log("i disconneced")
       socket.leave(chatId);
   });
 
@@ -48,7 +49,6 @@ io.on("connection", socket => {
       userId = getUserId(token);
       const user = await findUserById(userId);
       await addMessage(user, chatId, msg, time);
-      console.log("added message")
       io.to(chatId).emit("message", formatMessage(user.username, msg, time));
     } catch(e) {}
   });
