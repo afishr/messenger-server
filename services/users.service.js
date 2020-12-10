@@ -21,7 +21,7 @@ exports.registerUser = async (body) => {
   });
 
   try {
-    const result = await (await user.save()).toObject();
+    const result = (await user.save()).toObject();
 
     result.authToken = this.generateJWT(user);
     delete result.password;
@@ -85,5 +85,9 @@ exports.updateUser = async (id, user) => {
 }
 
 exports.getUserProfile = async (id) => {
-  return await UserModel.findById(id, { _id: 0, firstName: 1, lastName: 1, bio: 1 })
+  return await UserModel.findById(id, { _id: 0, firstName: 1, lastName: 1, bio: 1, username: 1, email: 1 })
+}
+
+exports.getUserByUsername = async (username) => {
+  return await UserModel.findOne({username}, {username: 1})
 }

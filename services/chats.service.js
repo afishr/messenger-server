@@ -6,12 +6,10 @@ const { findUserById } = require('./users.service');
 exports.getChat = async (fromId, toId) => {
   const to = await findUserById(toId);
   const from = await findUserById(fromId);
-  let fromObject = await (await UserModel.findById(fromId));
+  let fromObject = await UserModel.findById(fromId);
   if (fromObject) {
-    fromObject = fromObject.populate('chats').execPopulate();
-
+    fromObject = await fromObject.populate('chats').execPopulate();
     const { chats } = fromObject;
-    console.log(chats)
     for (const chat of chats) {
       if (chat.participants.includes(toId)) {
         return chat._id.toString();
@@ -45,20 +43,26 @@ exports.addMessage = async (from, chatId, content, timeSent) => {
     content,
     timeSent,
   });
-  await message.save();
+  message.save();
+
+  await ChatModel.updateOne({ _id: chat._id }, { $push: { messages: message } });
 };
 
 exports.getMessages = async (userId, chatId) => {
   const chat = await ChatModel.findOne({
     _id: chatId,
-    participants: userId,
   }).exec();
 
-  if (!chat) {
+  if (!chat.participants.includes(userId) || !chat) {
     return [];
   }
 
-  return MessageModel.find({ chat: chatId })
-    .sort({ timeSent: -1 })
+  messages = await MessageModel.find({ chat: chatId })
+    .sort({ timeSent: 1 })
     .exec();
+
+  for (message of messages) {
+    await message.populate('from', 'username').execPopulate();
+  }
+  return messages
 };

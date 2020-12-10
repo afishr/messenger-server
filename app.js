@@ -5,7 +5,8 @@ const morgan = require('morgan');
 const cors = require('cors');
 const { authRoute } = require('./routes/auth.route');
 const { userRoute } = require('./routes/user.route');
-const { authGuard } = require('./middlewares/auth.middleware');
+const { chatRoute } = require('./routes/chat.route');
+const { errorHandler } = require('./common/error.handling/error.handler');
 const { formatMessage, getChat, addMessage } = require("./services/chats.service");
 const { getUserId, findUserById } = require("./services/users.service");
 require('dotenv').config();
@@ -23,6 +24,8 @@ app.use(bodyParser.json());
 app.use(cors())
 app.use('/auth', authRoute);
 app.use('/users', userRoute);
+app.use('/chats', chatRoute);
+app.use(errorHandler);
 
 const port = process.env.PORT || 8080;
 
@@ -34,20 +37,25 @@ const io = socketio(server);
 
 io.on("connection", socket => {
   socket.on("disconnectMe", ({chatId}) => {
-      console.log("diconnect");
       socket.leave(chatId);
   });
 
+
   socket.on("chatMessage", async ({ msg, token, chatId }) => {
+    try {
       console.log("i `have a new message", msg, chatId);
       time = new Date().getTime();
       userId = getUserId(token);
       const user = await findUserById(userId);
-      await addMessage(user, chatId, msg, time)
+      await addMessage(user, chatId, msg, time);
+      console.log("added message")
       io.to(chatId).emit("message", formatMessage(user.username, msg, time));
+    } catch(e) {}
   });
 
+
   socket.on("joinRoom", async ({ token, to }) => {
+    try {
       userId = getUserId(token);
       if (userId) {
         user = await findUserById(userId);
@@ -55,6 +63,7 @@ io.on("connection", socket => {
         socket.join(chatId);
         console.log(`User ${userId} connected to ${chatId}`);
         socket.emit("chatId", chatId);
-    }
+      }
+    } catch(e) {}
   });
 });

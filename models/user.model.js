@@ -12,6 +12,7 @@ const userSchema = new Schema({
   firstName: { type: String, default: null },
   bio: { type: String, default: null },
   chats: [{ type: mongoose.Schema.Types.ObjectId, ref: "Chat" }],
+  isValidated: { type: Boolean, default: false }
 });
 
 exports.UserModel = mongoose.model('User', userSchema);
