@@ -1,7 +1,6 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const { UserModel } = require('../models/user.model');
-
 const SALT_WORK_FACTOR = 10;
 
 const hashPassword = async (plainTextPassword) => {
@@ -59,20 +58,32 @@ exports.loginUser = async (body) => {
 exports.generateJWT = ({ _id, username, email }) => jwt.sign(
   { _id, username, email },
   process.env.JWT_SECRET,
-  { expiresIn: parseInt(process.env.JWT_TTL, 10) },
+  { expiresIn: parseInt(process.env.JWT_TTL) },
 );
 
 exports.getUserId = (token) => {
   if (token == null) return null;
 
-  const extractedUser = jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
+  user = jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
     if (err) {
-      return null;
+      return null
     }
-    return user._id;
+    return user._id
   });
+  
+  return user
+}
 
-  return extractedUser;
-};
+exports.findUserById = async (id) => {
+  return await UserModel.findById(id)
+}
 
-exports.findUserById = (id) => UserModel.findById(id);
+exports.updateUser = async (id, user) => {
+  time = new Date().getTime();
+  console.log(user)
+  await UserModel.findByIdAndUpdate(id, user, {useFindAndModify: false}).exec()
+}
+
+exports.getUserProfile = async (id) => {
+  return await UserModel.findById(id, { _id: 0, firstName: 1, lastName: 1, bio: 1 })
+}

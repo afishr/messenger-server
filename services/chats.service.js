@@ -6,15 +6,16 @@ const { findUserById } = require('./users.service');
 exports.getChat = async (fromId, toId) => {
   const to = await findUserById(toId);
   const from = await findUserById(fromId);
-  const fromObject = await (await UserModel.findById(fromId))
-    .populate('chats')
-    .execPopulate();
-  const { chats } = fromObject;
+  let fromObject = await (await UserModel.findById(fromId));
+  if (fromObject) {
+    fromObject = fromObject.populate('chats').execPopulate();
 
-  // eslint-disable-next-line no-restricted-syntax
-  for (const chat of chats) {
-    if (chat.participants.includes(toId)) {
-      return chat._id.toString();
+    const { chats } = fromObject;
+    console.log(chats)
+    for (const chat of chats) {
+      if (chat.participants.includes(toId)) {
+        return chat._id.toString();
+      }
     }
   }
 

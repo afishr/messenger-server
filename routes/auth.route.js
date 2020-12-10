@@ -1,6 +1,7 @@
 const express = require('express');
 const { CommonError } = require('../errors/common.error');
-const { registerUser, loginUser } = require('../services/users.service');
+const { registerUser, loginUser, updateUser } = require('../services/users.service');
+const { authGuard } = require('../middlewares/auth.middleware');
 
 const router = express.Router();
 
@@ -30,5 +31,16 @@ router.post('/login', async (req, res) => {
 
   return res.send(user);
 });
+
+
+router.put('/', authGuard, async (req, res) => {
+  await updateUser({
+    id: req.user._id,
+    username: req.body.username,
+    email: req.body.email,
+  });
+
+  res.status(200).send();
+})
 
 exports.authRoute = router;
