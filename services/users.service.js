@@ -95,7 +95,7 @@ exports.changePassword = async (userId, oldPassword, newPassword) => {
 
     user.password = hashedPassword;
 
-    await user.save();
+    return user.save();
   }
 
   return false;
