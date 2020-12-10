@@ -47,7 +47,7 @@ exports.loginUser = async (body) => {
     ],
   }).lean();
 
-  if (!user || !checkPassword(body.password, user.password)) {
+  if (!user || !(await checkPassword(body.password, user.password))) {
     return null;
   }
 
@@ -86,13 +86,17 @@ exports.getUserProfile = async (id) => UserModel.findById(id, {
 });
 
 exports.changePassword = async (userId, oldPassword, newPassword) => {
-  const user = await UserModel.findOne({ userId });
+  const user = await UserModel.findById({ _id: userId });
 
-  if (checkPassword(oldPassword, user.password)) {
+  console.log(userId);
+
+  if (await checkPassword(oldPassword, user.password)) {
     const hashedPassword = await hashPassword(newPassword);
 
     user.password = hashedPassword;
 
     await user.save();
   }
+
+  return false;
 };

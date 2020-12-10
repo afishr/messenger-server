@@ -28,8 +28,8 @@ router.get('/profile', authGuard, async (req, res) => {
 });
 
 router.post('/change-password', authGuard, async (req, res) => {
-  await changePassword(req.user._id, req.body.oldPassword, req.body.newPassword);
-  res.sendStatus(200);
+  const result = await changePassword(req.user._id, req.body.oldPassword, req.body.newPassword);
+  res.sendStatus(result ? 200 : 403);
 });
 
 exports.userRoute = router;
