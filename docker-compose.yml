@@ -51,7 +51,16 @@ services:
       - "9200:9200"
     networks:
       - app-network
+    path:
+      data: "C:/Elastic/Elasticsearch/data"
+      logs: "C:/Elastic/Elasticsearch/logs"
 
+  kibana:
+    image: docker.elastic.co/kibana/kibana:7.10.1
+    ports:
+      - "5601:5601"
+    networks:
+      - app-network
 
 networks:
   app-network:
