@@ -44,13 +44,15 @@ io.on("connection", socket => {
 
   socket.on("chatMessage", async ({ msg, token, chatId }) => {
     try {
-      console.log("i `have a new message", msg, chatId);
-      time = new Date().getTime();
-      userId = getUserId(token);
-      const user = await findUserById(userId);
-      await addMessage(user, chatId, msg, time);
-      io.to(chatId).emit("message", formatMessage(user.username, msg, time));
-    } catch(e) {}
+      if (chatId) {
+        console.log("i `have a new message", msg, chatId);
+        time = new Date().getTime();
+        userId = getUserId(token);
+        const user = await findUserById(userId);
+        await addMessage(user, chatId, msg, time);
+        io.to(chatId).emit("message", formatMessage(user.username, msg, time));
+      }
+    } catch(e) {console.log("here")}
   });
 
 

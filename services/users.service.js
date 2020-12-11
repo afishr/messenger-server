@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const { UserModel } = require('../models/user.model');
+const mongoose = require('mongoose');
 
 const SALT_WORK_FACTOR = 10;
 
@@ -75,26 +76,26 @@ exports.getUserId = (token) => {
   return user;
 };
 
-exports.findUserById = async (id) => UserModel.findById(id);
+exports.findUserById = async (id) => {
+  const userId = mongoose.Types.ObjectId(id)
+  UserModel.findById(userId);
+}
 
 exports.updateUser = async (id, user) => {
   time = new Date().getTime();
-  console.log(user)
-  await UserModel.findByIdAndUpdate(id, user, {useFindAndModify: false}).exec()
+  await UserModel.findByIdAndUpdate(id, user, {useFindAndModify: false}).exec();
 }
 
 exports.getUserProfile = async (id) => {
-  return await UserModel.findById(id, { _id: 0, firstName: 1, lastName: 1, bio: 1, username: 1, email: 1 })
+  return await UserModel.findById(id, { _id: 0, firstName: 1, lastName: 1, bio: 1, username: 1, email: 1 });
 }
 
 exports.getUserByUsername = async (username) => {
-  return await UserModel.findOne({username}, {username: 1})
+  return await UserModel.findOne({username}, {username: 1});
 }
 
 exports.changePassword = async (userId, oldPassword, newPassword) => {
   const user = await UserModel.findById({ _id: userId });
-
-  console.log(userId);
 
   if (await checkPassword(oldPassword, user.password)) {
     const hashedPassword = await hashPassword(newPassword);
