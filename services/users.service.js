@@ -107,3 +107,7 @@ exports.changePassword = async (userId, oldPassword, newPassword) => {
 
   return false;
 };
+exports.updateUser = async ({id, username, email}) => {
+  await UserModel.findByIdAndUpdate(id, {username, email}, {useFindAndModify: false})
+  console.log("updated")
+}

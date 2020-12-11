@@ -50,6 +50,7 @@ const server = app.listen(port, () => {
   console.log(`Server listening on port ${port}`);
 });
 
+
 const io = socketio(server);
 
 io.on("connection", socket => {
@@ -79,7 +80,7 @@ io.on("connection", socket => {
   socket.on("joinRoom", async ({ token, to }) => {
     try {
       await socketLimiter.consume(socket.handshake.address);
-
+      
       const userId = getUserId(token);
       if (userId) {
         const chatId = await getChat(userId, to);
