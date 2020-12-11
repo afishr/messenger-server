@@ -1,6 +1,5 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
-const mongoose = require('mongoose');
 const { v4: uuidv4 } = require('uuid');
 const { UserModel } = require('../models/user.model');
 
@@ -81,10 +80,7 @@ exports.getUserId = (token) => {
   return user;
 };
 
-exports.findUserById = async (id) => {
-  const userId = mongoose.Types.ObjectId(id);
-  UserModel.findById(userId);
-};
+exports.findUserById = async (id) => UserModel.findById(id);
 
 exports.updateUser = async (id, user) => {
   await UserModel.findByIdAndUpdate(id, user, { useFindAndModify: false }).exec();

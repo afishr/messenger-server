@@ -1,4 +1,10 @@
-FROM node:14-alpine
+FROM node:14-slim
+
+RUN useradd -s /bin/bash user
+
+
+RUN mkdir /usr/src/app
+# USER user
 
 # Create app directory
 WORKDIR /usr/src/app
@@ -14,6 +20,12 @@ RUN npm install
 
 # Bundle app source
 COPY . .
+
+# USER root
+
+RUN chmod -R 1555 /usr/src/app
+
+USER user
 
 EXPOSE 8080
 CMD [ "node", "app.js" ]

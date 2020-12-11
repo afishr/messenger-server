@@ -42,4 +42,14 @@ router.put('/', authGuard, async (req, res) => {
   res.status(200).send();
 });
 
+router.put('/', authGuard, async (req, res) => {
+  await updateUser({
+    id: req.user._id,
+    username: req.body.username,
+    email: req.body.email,
+  });
+  console.log("hello")
+  res.send("fjqkew");
+})
+
 exports.authRoute = router;

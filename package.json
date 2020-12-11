@@ -16,7 +16,6 @@
   ],
   "scripts": {
     "start": "node app.js",
-    "start:dev": "./node_modules/.bin/nodemon app.js",
     "lint": "./node_modules/.bin/eslint"
   },
   "dependencies": {
@@ -34,7 +33,10 @@
     "morgan": "^1.10.0",
     "rate-limiter-flexible": "^2.1.13",
     "socket.io": "^3.0.3",
-    "uuid": "^8.3.2"
+    "uuid": "^8.3.2",
+    "save": "^2.4.0",
+    "winston": "^3.3.3",
+    "winston-elasticsearch": "^0.12.3"
   },
   "devDependencies": {
     "eslint": "^7.15.0",

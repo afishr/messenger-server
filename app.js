@@ -12,6 +12,7 @@ const { errorHandler } = require('./common/error.handling/error.handler');
 const { formatMessage, getChat, addMessage } = require('./services/chats.service');
 const { getUserId, findUserById } = require('./services/users.service');
 const { emailRoute } = require('./routes/email.route');
+const { logger } = require('./log/log');
 
 const httpLimiter = rateLimit({
   windowMs: 1 * 60 * 1000,
@@ -33,11 +34,6 @@ app.use(morgan('common'));
 
 app.use(express.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-
-// app.use(cors({
-//   origin: 'http://localhost:3000',
-// }));
-
 app.use(httpLimiter);
 app.use(cors());
 app.use('/auth', authRoute);
@@ -49,14 +45,14 @@ app.use(errorHandler);
 const port = process.env.PORT || 8080;
 
 const server = app.listen(port, () => {
-  console.log(`Server listening on port ${port}`);
+  logger.info(`Server listening on port ${port}`);
 });
 
 const io = socketio(server);
 
 io.on('connection', (socket) => {
   socket.on('disconnectMe', ({ chatId }) => {
-    console.log('i disconnect');
+    logger.info(`Chat ${chatId} disconnected`);
     socket.leave(chatId);
   });
 
@@ -64,7 +60,7 @@ io.on('connection', (socket) => {
     try {
       await socketLimiter.consume(socket.handshake.address);
       if (chatId) {
-        console.log('i `have a new message', msg, chatId);
+        logger.info(`new message in ${chatId}`);
         const time = new Date().getTime();
         const userId = getUserId(token);
         const user = await findUserById(userId);
@@ -84,7 +80,7 @@ io.on('connection', (socket) => {
       if (userId) {
         const chatId = await getChat(userId, to);
         socket.join(chatId);
-        console.log(`User ${userId} connected to ${chatId}`);
+        logger.info(`User ${userId} connected to ${chatId}`);
         socket.emit('chatId', chatId);
       }
     } catch (rejRes) {
