@@ -30,7 +30,9 @@
     "moment": "^2.29.1",
     "mongoose": "^5.4.10",
     "morgan": "^1.10.0",
-    "socket.io": "^3.0.3"
+    "socket.io": "^3.0.3",
+    "winston": "^3.3.3",
+    "winston-elasticsearch": "^0.12.3"
   },
   "devDependencies": {
     "eslint": "^7.15.0",
