@@ -77,8 +77,7 @@ exports.getUserId = (token) => {
 };
 
 exports.findUserById = async (id) => {
-  const userId = mongoose.Types.ObjectId(id)
-  UserModel.findById(userId);
+  return UserModel.findById(id);
 }
 
 exports.updateUser = async (id, user) => {
@@ -107,7 +106,4 @@ exports.changePassword = async (userId, oldPassword, newPassword) => {
 
   return false;
 };
-exports.updateUser = async ({id, username, email}) => {
-  await UserModel.findByIdAndUpdate(id, {username, email}, {useFindAndModify: false})
-  console.log("updated")
-}
+

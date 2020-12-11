@@ -9,6 +9,7 @@ const router = express.Router();
 
 router.put('/', authGuard, async (req, res) => {
   const user = await findUserById(req.user._id);
+
   user.firstName = req.body.user.firstName;
   user.lastName = req.body.user.lastName;
   user.bio = req.body.user.bio;
