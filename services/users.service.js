@@ -1,7 +1,8 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
-const { UserModel } = require('../models/user.model');
 const mongoose = require('mongoose');
+const { v4: uuidv4 } = require('uuid');
+const { UserModel } = require('../models/user.model');
 
 const SALT_WORK_FACTOR = 10;
 
@@ -20,6 +21,7 @@ exports.registerUser = async (body) => {
     username: body.username,
     email: body.email,
     password: hashedPassword,
+    emailConfirmToken: uuidv4(),
   });
 
   try {
@@ -27,6 +29,7 @@ exports.registerUser = async (body) => {
 
     result.authToken = this.generateJWT(user);
     delete result.password;
+    delete result.emailConfirmToken;
 
     return {
       user: result,
@@ -54,6 +57,8 @@ exports.loginUser = async (body) => {
 
   user.authToken = this.generateJWT(user);
   delete user.password;
+  delete user.emailConfirmToken;
+
   return user;
 };
 
@@ -77,22 +82,19 @@ exports.getUserId = (token) => {
 };
 
 exports.findUserById = async (id) => {
-  const userId = mongoose.Types.ObjectId(id)
+  const userId = mongoose.Types.ObjectId(id);
   UserModel.findById(userId);
-}
+};
 
 exports.updateUser = async (id, user) => {
-  time = new Date().getTime();
-  await UserModel.findByIdAndUpdate(id, user, {useFindAndModify: false}).exec();
-}
+  await UserModel.findByIdAndUpdate(id, user, { useFindAndModify: false }).exec();
+};
 
-exports.getUserProfile = async (id) => {
-  return await UserModel.findById(id, { _id: 0, firstName: 1, lastName: 1, bio: 1, username: 1, email: 1 });
-}
+exports.getUserProfile = async (id) => UserModel.findById(id, {
+  _id: 0, firstName: 1, lastName: 1, bio: 1, username: 1, email: 1,
+});
 
-exports.getUserByUsername = async (username) => {
-  return await UserModel.findOne({username}, {username: 1});
-}
+exports.getUserByUsername = async (username) => UserModel.findOne({ username }, { username: 1 });
 
 exports.changePassword = async (userId, oldPassword, newPassword) => {
   const user = await UserModel.findById({ _id: userId });

@@ -2,7 +2,7 @@ const express = require('express');
 const { authGuard } = require('../middlewares/auth.middleware');
 const { getChats } = require('../services/chats.service');
 const {
-  updateUser, getUserProfile, findUserById, changePassword, getUserByUsername
+  updateUser, getUserProfile, findUserById, changePassword, getUserByUsername,
 } = require('../services/users.service');
 
 const router = express.Router();
@@ -34,13 +34,13 @@ router.post('/change-password', authGuard, async (req, res) => {
 });
 
 router.get('/chats', authGuard, async (req, res) => {
-    const chats = await getChats(req.user._id);
-    return res.status(200).send({ chats });
-})
+  const chats = await getChats(req.user._id);
+  return res.status(200).send({ chats });
+});
 
-router.get("/:username", authGuard, async (req, res) => {
-    const user = await getUserByUsername(req.params.username);
-    return res.status(200).send(user);
-})
+router.get('/:username', authGuard, async (req, res) => {
+  const user = await getUserByUsername(req.params.username);
+  return res.status(200).send(user);
+});
 
 exports.userRoute = router;
