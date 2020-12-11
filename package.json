@@ -32,7 +32,10 @@
     "mongoose": "^5.4.10",
     "morgan": "^1.10.0",
     "rate-limiter-flexible": "^2.1.13",
-    "socket.io": "^3.0.3"
+    "save": "^2.4.0",
+    "socket.io": "^3.0.3",
+    "winston": "^3.3.3",
+    "winston-elasticsearch": "^0.12.3"
   },
   "devDependencies": {
     "eslint": "^7.15.0",

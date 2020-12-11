@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const { logger } = require('./log/log');
 
 const {
   MONGO_USERNAME,
@@ -18,8 +19,7 @@ const url = `mongodb://${MONGO_USERNAME}:${MONGO_PASSWORD}@${MONGO_HOSTNAME}:${M
 
 mongoose.connect(url, options)
   .then(() => {
-    console.log('MongoDB is connected');
   })
   .catch((err) => {
-    console.log(err);
+    logger.info(`DB ERROR: ${err}`);
   });
