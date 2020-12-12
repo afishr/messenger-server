@@ -13,7 +13,7 @@ const { formatMessage, getChat, addMessage } = require('./services/chats.service
 const { getUserId, findUserById } = require('./services/users.service');
 const { emailRoute } = require('./routes/email.route');
 const { logger } = require('./log/log');
-const { createLogger } = require('winston');
+const { initSender } = require('./services/email.service');
 
 const httpLimiter = rateLimit({
   windowMs: 1 * 60 * 1000,
@@ -30,28 +30,28 @@ const socketLimiter = new RateLimiterMemory(
 require('dotenv').config();
 require('./db');
 
-loggerstream = {
-  write: function (message, encoding) {
-    console.log("mmmm", message)
+const loggerstream = {
+  write(message, encoding) {
+    console.log('mmmm', message);
     logger.info(message);
-  }
+  },
 };
 
 function createLog(tokens, req, res) {
   const logData = {
-            requestMethod: req.method,
-            requestUrl: `${req.protocol}://${req.get('host')}${req.originalUrl}`,
-            protocol: `HTTP/${req.httpVersion}`,
-            remoteIp: req.ip.indexOf(':') >= 0 ? req.ip.substring(req.ip.lastIndexOf(':') + 1) : req.ip,
-            requestSize: req.socket.bytesRead,
-            userAgent: req.get('User-Agent'),
-            referrer: req.get('Referrer'),
-  } 
-  return JSON.stringify(logData)
+    requestMethod: req.method,
+    requestUrl: `${req.protocol}://${req.get('host')}${req.originalUrl}`,
+    protocol: `HTTP/${req.httpVersion}`,
+    remoteIp: req.ip.indexOf(':') >= 0 ? req.ip.substring(req.ip.lastIndexOf(':') + 1) : req.ip,
+    requestSize: req.socket.bytesRead,
+    userAgent: req.get('User-Agent'),
+    referrer: req.get('Referrer'),
+  };
+  return JSON.stringify(logData);
 }
 
 const app = express();
-app.use(morgan(createLog, { "stream": loggerstream }));
+app.use(morgan(createLog, { stream: loggerstream }));
 app.use(express.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(httpLimiter);
@@ -65,6 +65,7 @@ app.use(errorHandler);
 const port = process.env.PORT || 8080;
 
 const server = app.listen(port, () => {
+  initSender(process.env.SENDGRID_KEY);
   logger.info(`Server listening on port ${port}`);
 });
 

@@ -8,10 +8,10 @@ const sendConfirmationEmail = (email, uuid) => {
   const msg = {
     to: email,
     from: process.env.SENDGRID_FROM_EMAIL,
-    templateId: process.env.SENDGRID_TEMPLATE_ID,
+    templateId: process.env.SENDGRID_TEMPLATE_CONFIRM,
 
     dynamic_template_data: {
-      link: `${process.env.SERVER_ADDR}/confirm/${uuid}`,
+      link: `http://localhost/email/confirm/?token=${uuid}`,
     },
   };
 

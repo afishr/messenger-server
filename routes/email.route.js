@@ -1,10 +1,16 @@
 const express = require('express');
-const { authGuard } = require('../middlewares/auth.middleware');
+const { confirmEmail } = require('../services/users.service');
 
 const router = express.Router();
 
-router.get('/confirm', authGuard, (req, res) => {
-  res.send(req.query);
+router.get('/confirm', async (req, res) => {
+  const result = await confirmEmail(req.query.token);
+
+  if (result) {
+    res.sendStatus(200);
+  } else {
+    res.sendStatus(401);
+  }
 });
 
 exports.emailRoute = router;

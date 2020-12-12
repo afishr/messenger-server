@@ -3,7 +3,9 @@ const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
 const userSchema = new Schema({
-  username: { type: String, required: true, index: { unique: true }, min: 7, max: 20 },
+  username: {
+    type: String, required: true, index: { unique: true }, min: 7, max: 20,
+  },
   email: { type: String, required: true, index: { unique: true } },
   password: { type: String, required: true },
   timeCreated: { type: Date, required: true, default: Date.now() },

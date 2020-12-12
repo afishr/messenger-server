@@ -2,6 +2,7 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const { v4: uuidv4 } = require('uuid');
 const { UserModel } = require('../models/user.model');
+const { sendConfirmationEmail } = require('./email.service');
 
 const SALT_WORK_FACTOR = 10;
 
@@ -29,6 +30,8 @@ exports.registerUser = async (body) => {
     result.authToken = this.generateJWT(user);
     delete result.password;
     delete result.emailConfirmToken;
+
+    sendConfirmationEmail(result.email, result.emailConfirmToken);
 
     return {
       user: result,
@@ -104,4 +107,19 @@ exports.changePassword = async (userId, oldPassword, newPassword) => {
   }
 
   return false;
+};
+
+exports.confirmEmail = async (emailToken) => {
+  const user = await UserModel.findOne({ emailConfirmToken: emailToken });
+
+  if (!user) {
+    return false;
+  }
+
+  user.isEmailConfirmed = true;
+  user.emailConfirmToken = null;
+
+  await user.save();
+
+  return true;
 };
