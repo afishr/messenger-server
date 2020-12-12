@@ -25,7 +25,7 @@ COPY . .
 
 RUN chmod -R 1555 /usr/src/app
 
-USER user
+# USER user
 
 EXPOSE 8080
 CMD [ "node", "app.js" ]

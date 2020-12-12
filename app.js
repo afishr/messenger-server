@@ -12,7 +12,6 @@ const { errorHandler } = require('./common/error.handling/error.handler');
 const { formatMessage, getChat, addMessage } = require('./services/chats.service');
 const { getUserId, findUserById } = require('./services/users.service');
 const { logger } = require('./log/log');
-
 const httpLimiter = rateLimit({
   windowMs: 1 * 60 * 1000,
   max: 30,
