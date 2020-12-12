@@ -19,6 +19,7 @@
     "lint": "./node_modules/.bin/eslint"
   },
   "dependencies": {
+    "@sendgrid/mail": "^7.4.0",
     "bcrypt": "^5.0.0",
     "body-parser": "^1.19.0",
     "cors": "^2.8.5",
@@ -31,8 +32,9 @@
     "mongoose": "^5.4.10",
     "morgan": "^1.10.0",
     "rate-limiter-flexible": "^2.1.13",
-    "save": "^2.4.0",
     "socket.io": "^3.0.3",
+    "uuid": "^8.3.2",
+    "save": "^2.4.0",
     "winston": "^3.3.3",
     "winston-elasticsearch": "^0.12.3"
   },

@@ -11,6 +11,7 @@ const { chatRoute } = require('./routes/chat.route');
 const { errorHandler } = require('./common/error.handling/error.handler');
 const { formatMessage, getChat, addMessage } = require('./services/chats.service');
 const { getUserId, findUserById } = require('./services/users.service');
+const { emailRoute } = require('./routes/email.route');
 const { logger } = require('./log/log');
 const httpLimiter = rateLimit({
   windowMs: 1 * 60 * 1000,
@@ -37,6 +38,7 @@ app.use(cors());
 app.use('/auth', authRoute);
 app.use('/users', userRoute);
 app.use('/chats', chatRoute);
+app.use('/email', emailRoute);
 app.use(errorHandler);
 
 const port = process.env.PORT || 8080;
