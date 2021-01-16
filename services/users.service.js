@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
-const { UserModel } = require('../models/user.model');
 const mongoose = require('mongoose');
+const { UserModel } = require('../models/user.model');
 
 const SALT_WORK_FACTOR = 10;
 
