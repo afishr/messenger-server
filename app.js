@@ -1,5 +1,8 @@
 const express = require('express');
 const localHost = require('https-localhost');
+const https = require('https');
+const fs = require('fs');
+const path = require('path')
 const socketio = require('socket.io');
 const bodyParser = require('body-parser');
 const morgan = require('morgan');
@@ -30,7 +33,7 @@ require('./db');
 
 const domain = 'localhost';
 
-const app = localHost(domain);
+const app = express(domain);
 app.use(morgan('common'));
 
 app.use(express.urlencoded({ extended: true }));
@@ -49,18 +52,21 @@ app.use(errorHandler);
 
 const port = process.env.PORT || 443;
 
-const server = app.listen(port, () => {
-  console.log(`Server listening on port ${port}`);
-});
+const server = https.createServer({
+  key: fs.readFileSync(path.resolve('.cert/localhost.key')),
+  cert: fs.readFileSync(path.resolve('.cert/localhost.crt'))
+}, app)
 
 const io = socketio(server);
 
+server.listen(port, () => {
+  console.log('Listening...')
+})
+
 io.on('connection', (socket) => {
   socket.on('disconnectMe', ({ chatId }) => {
-    console.log('i disconnect');
     socket.leave(chatId);
   });
-
   socket.on('chatMessage', async ({ msg, token, chatId }) => {
     try {
       await socketLimiter.consume(socket.handshake.address);

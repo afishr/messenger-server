@@ -14,7 +14,10 @@ const options = {
   connectTimeoutMS: 10000,
 };
 
-const url = `mongodb://${MONGO_USERNAME}:${MONGO_PASSWORD}@${MONGO_HOSTNAME}:${MONGO_PORT}/${MONGO_DB}?authSource=admin`;
+const password = 'qCuhasgt1PXQLYAz'
+const dbname = 'messenger'
+
+const url = `mongodb+srv://master:${password}@cluster0.906uy.mongodb.net/${dbname}?retryWrites=true&w=majority`;
 
 mongoose.connect(url, options)
   .then(() => {

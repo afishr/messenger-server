@@ -78,7 +78,7 @@ exports.getUserId = (token) => {
 
 exports.findUserById = async (id) => {
   const userId = mongoose.Types.ObjectId(id)
-  UserModel.findById(userId);
+  return UserModel.findById(userId);
 }
 
 exports.updateUser = async (id, user) => {
